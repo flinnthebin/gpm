@@ -1,17 +1,66 @@
 #include "../include/gpm.hpp"
-#include "parser.cpp"
-#include "dispatcher.cpp"
-#include "inputhandler.cpp"
+#include <ncurses.h>
+#include <iostream>
 
-    auto main -> int() {
-        Parser parser = new Parser();
-        Dispatcher dispatch = new Dispatcher();
-        InputHandler input = new InputHandler();
-
-        while (true) {
-            auto in = input.getInput();
-            auto command = parser.parse(in);
-            auto output = dispatch.send(command);
-            std::cout << "success";
+auto print_menu(int select, const std::vector<std::string>& opts) -> void {
+    for (int i = 0; i < opts.size(); ++i) {
+        if (select == i + 1) {
+            attron(A_REVERSE);
+            mvprintw(i + 1, 1, "%s", opts[i].c_str());
+            attroff(A_REVERSE);
+        } else {
+            mvprintw(i + 1, 1, "%s", opts[i].c_str());
         }
     }
+}
+
+auto main() -> int {
+    std::vector<std::string> opts = {"option1", "option2", "option3", "option4"};
+    auto select = 1;
+    auto opt = 0;
+        int in;
+
+    initscr();
+    clear();
+    noecho();
+    cbreak();
+    keypad(stdscr, TRUE);
+
+    while (true) {
+        print_menu(select, opts);
+        in = getch();
+        switch (in) {
+            case 'k':
+                if (select == 1) {
+                    select = opts.size();
+                } else {
+                    --select;
+                }
+                break;
+            case 'j':
+                if (select == opts.size()) {
+                    select = 1;
+                } else {
+                    ++select;
+                }
+                break;
+            case '\n':
+                opt = select;
+                break;
+            case 'q':
+                opt = opts.size();
+
+                break;
+        }
+        if (opt != 0)
+            break;
+    }
+    endwin();
+
+    if (opt == opts.size()) {
+        std::cout << "Thank you for using gpm!" << std::endl;
+    } else {
+        std::cout << opts[opt - 1] << " selected" << std::endl;
+    }
+    return 0;
+}
