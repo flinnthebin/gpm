@@ -21,6 +21,9 @@ auto main() -> int {
         int in;
     // TODO: make this happen without
     // removing the user from the terminal
+    // ncurses isnt going to work. ANSI escape 
+    // sequences may be an appropriate alternative
+    // to create the menu
     initscr();
     clear();
     noecho();
