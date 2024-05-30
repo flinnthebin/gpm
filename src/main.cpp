@@ -19,7 +19,8 @@ auto main() -> int {
     auto select = 1;
     auto opt = 0;
         int in;
-
+    // TODO: make this happen without
+    // removing the user from the terminal
     initscr();
     clear();
     noecho();
